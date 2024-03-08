@@ -15,6 +15,7 @@ import {
 import GameStats from "../../components/game-stats/GameStats";
 import Hangman from "../../components/hangman/Hangman";
 import {
+  clearDuration,
   clearErrors,
   resetGameId,
   setErrors,
@@ -151,6 +152,7 @@ const Play = () => {
             onClick={() => {
               dispatch(resetGameId());
               dispatch(clearErrors());
+              dispatch(clearDuration());
             }}
             variant="contained"
             sx={{ m: 0, right: 0 }}

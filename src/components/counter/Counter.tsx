@@ -3,36 +3,33 @@ import { useEffect, useRef, useState } from "react";
 import { EnumGameStatus } from "../../types/types";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setDuration } from "../../redux/gameSlice";
-import { useNavigate } from "react-router-dom";
-import { sendScoringData } from "../../redux/highScoreSlice";
-import { useAppSelector } from "../../hooks/useAppSelector";
-// import { setGameData } from "../redux/gameSlice";
+
+let startTime: number, interval: ReturnType<typeof setInterval>;
 
 const Counter = ({ gameStatus }: any) => {
   const dispatch = useAppDispatch();
   const [seconds, setSeconds] = useState(0);
-  const timerId = useRef<any>(null);
-  const navigate = useNavigate();
+  const [milliseconds, setMilliseconds] = useState(0);
+  const secondsRef = useRef<any>(null);
 
   const startTimer = () => {
-    timerId.current = setInterval(() => {
+    secondsRef.current = setInterval(() => {
       setSeconds((prev) => prev + 1);
     }, 1000);
+
+    startTime = Date.now();
+    interval = setInterval(() => {
+      setMilliseconds(Date.now() - startTime);
+    });
   };
 
   const stopTimer = () => {
-    clearInterval(timerId.current);
-    timerId.current = 0;
+    clearInterval(secondsRef.current);
+    secondsRef.current = 0;
+
+    clearInterval(interval);
   };
 
-  const resetTimer = () => {
-    stopTimer();
-    if (seconds) {
-      setSeconds(0);
-    }
-  };
-
-  // gameStatus === EnumGameStatus.in_progress && startTimer();
   useEffect(() => {
     gameStatus === EnumGameStatus.in_progress && startTimer();
     gameStatus === EnumGameStatus.lose && stopTimer();
@@ -40,12 +37,15 @@ const Counter = ({ gameStatus }: any) => {
     if (gameStatus === EnumGameStatus.win) {
       stopTimer();
 
-      console.log(seconds);
-      dispatch(setDuration(seconds));
+      dispatch(setDuration(milliseconds));
     }
   }, [gameStatus]);
 
-  return <Typography>Duration: {seconds}s</Typography>;
+  return (
+    <>
+      <Typography>Duration: {seconds}s</Typography>
+    </>
+  );
 };
 
 export default Counter;

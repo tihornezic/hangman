@@ -34,7 +34,7 @@ const Congratulations = () => {
       </Typography>
 
       <Stack>
-        <Typography>Duration: {gameData.duration}s</Typography>
+        <Typography>Duration: {gameData.duration}ms</Typography>
         <Typography>Mistakes: {gameData.errors.length}</Typography>
         <Typography>Score: {calculateScore(gameData.errors.length)}</Typography>
       </Stack>

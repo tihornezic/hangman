@@ -28,8 +28,6 @@ export const fetchHighScoreData = createAsyncThunk(
 export const sendScoringData = createAsyncThunk(
   "highScore/sendScoringData",
   async (data: any) => {
-    console.log(data)
-
     const res = await axios.post(
       "https://my-json-server.typicode.com/stanko-ingemark/hang_the_wise_man_frontend_task/highscores",
       data

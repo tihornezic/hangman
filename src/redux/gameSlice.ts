@@ -55,6 +55,9 @@ export const gameSlice = createSlice({
     clearErrors: (state) => {
       state.errors = [];
     },
+    clearDuration: (state) => {
+      state.duration = 0;
+    },
   },
 });
 
@@ -65,6 +68,7 @@ export const {
   setDuration,
   setErrors,
   clearErrors,
+  clearDuration,
 } = gameSlice.actions;
 
 export const setPlayerNameAsync = (data: string) => (dispatch: AppDispatch) => {
