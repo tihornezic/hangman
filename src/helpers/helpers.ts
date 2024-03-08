@@ -14,7 +14,6 @@ export const findUniqueCharacters = (str: string) => {
 
 export const calculateArrayOfWordsArrayOfChars = (sentence: string) =>
   sentence
-    .toLowerCase()
     .split(" ")
     .map((word) => word)
     .map((arr) => arr.split(""));

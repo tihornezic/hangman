@@ -18,10 +18,6 @@ const GuessFieldsBoard = ({
   sx,
 }: GuessFieldsBoardProps) => {
   const drawCharacters = (character: string) => {
-    // if (gameStatus === EnumGameStatus.not_started) {
-    //   return <EmptyField />;
-    // }
-
     if (
       gameStatus === EnumGameStatus.lose ||
       gameStatus === EnumGameStatus.win
@@ -39,7 +35,7 @@ const GuessFieldsBoard = ({
       );
     }
 
-    const correctGuess = userInput.includes(character);
+    const correctGuess = userInput.includes(character.toLocaleLowerCase());
     const isSpecialChar = specialCharactersRegex.test(character);
 
     if (!(isSpecialChar || correctGuess)) {
