@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import gameReducer from "./gameSlice";
 import quoteReducer from "./quoteSlice";
-import highScoreReducer from "./highScoreSlice";
+import scoreReducer from "./scoreSlice";
 
 const store = configureStore({
   reducer: {
     game: gameReducer,
     quote: quoteReducer,
-    highScores: highScoreReducer,
+    highScores: scoreReducer,
   },
 });
 

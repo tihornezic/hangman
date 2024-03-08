@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { Dispatch, useEffect } from "react";
 import { EnumGameStatus } from "../../types/types";
 
 const keyboardLayout = [
@@ -7,34 +7,39 @@ const keyboardLayout = [
   ["n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
 ];
 
+type KeyboardProps = {
+  setUserInput: Dispatch<React.SetStateAction<string>>;
+  setTurn: Dispatch<React.SetStateAction<number>>;
+  gameStatus: EnumGameStatus;
+  setGameStatus: Dispatch<React.SetStateAction<EnumGameStatus>>;
+  usedCharacters: string[];
+};
+
 const Keyboard = ({
   setUserInput,
   setTurn,
   gameStatus,
   setGameStatus,
   usedCharacters,
-}: any) => {
-  // console.log("usedCharacters", usedCharacters);
-
+}: KeyboardProps) => {
   const handleType = (e: KeyboardEvent) => {
     const lowerCasedLetter = e.key.toLocaleLowerCase();
     const isLetter = lowerCasedLetter.match(/^[a-z]{1}$/) !== null;
 
     if (isLetter) {
-      // setGameInProgress(true);
       setGameStatus(EnumGameStatus.in_progress);
 
       if (usedCharacters.includes(lowerCasedLetter)) return;
 
-      setUserInput((prevGuess: any) => {
+      setUserInput((prevUserInput) => {
         // if letter already exists
-        if (prevGuess.includes(lowerCasedLetter)) {
-          return prevGuess;
+        if (prevUserInput.includes(lowerCasedLetter)) {
+          return prevUserInput;
         }
 
         // if successful turn
         setTurn((prevTurn: number) => prevTurn + 1);
-        return prevGuess + lowerCasedLetter;
+        return prevUserInput + lowerCasedLetter;
       });
     }
   };
@@ -47,8 +52,6 @@ const Keyboard = ({
 
     return () => window.removeEventListener("keydown", handleType);
   }, [gameStatus]);
-
-  // console.log(usedCharacters);
 
   return (
     <Stack spacing={1} sx={{ alignItems: "center" }}>
@@ -66,8 +69,6 @@ const Keyboard = ({
             const isWinOrLose =
               gameStatus === EnumGameStatus.lose ||
               gameStatus === EnumGameStatus.win;
-
-            // console.log(isUsedCharacters);
 
             return (
               <Button
@@ -90,10 +91,10 @@ const Keyboard = ({
                   if (gameStatus === EnumGameStatus.not_started)
                     setGameStatus(EnumGameStatus.in_progress);
 
-                  setUserInput((prevGuess: any) => {
+                  setUserInput((prevUserInput) => {
                     // if successful turn
                     setTurn((prevTurn: number) => prevTurn + 1);
-                    return prevGuess + key;
+                    return prevUserInput + key;
                   });
                 }}
               >

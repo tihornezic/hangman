@@ -62,7 +62,12 @@ const Navigation = () => {
     <>
       <AppBar position="static" sx={{ height: NAVIGATION_HEIGHT }}>
         <Toolbar disableGutters sx={{ height: "100%" }}>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component={NavLink}
+            to="/"
+            sx={{ flexGrow: 1, textDecoration: "none", color: "common.white" }}
+          >
             Hangman
           </Typography>
 

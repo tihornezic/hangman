@@ -6,11 +6,15 @@ import { setDuration } from "../../redux/gameSlice";
 
 let startTime: number, interval: ReturnType<typeof setInterval>;
 
-const Counter = ({ gameStatus }: any) => {
+type CounterProps = {
+  gameStatus: EnumGameStatus;
+};
+
+const Counter = ({ gameStatus }: CounterProps) => {
   const dispatch = useAppDispatch();
   const [seconds, setSeconds] = useState(0);
   const [milliseconds, setMilliseconds] = useState(0);
-  const secondsRef = useRef<any>(null);
+  const secondsRef = useRef<number | undefined>(undefined);
 
   const startTimer = () => {
     secondsRef.current = setInterval(() => {

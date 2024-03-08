@@ -23,3 +23,12 @@ export enum EnumGameStatus {
   lose = "Lose",
   win = "Win",
 }
+
+export type SendScoringData = {
+  quoteId: string;
+  length: number;
+  uniqueCharacters: number;
+  userName: string;
+  errors: number;
+  duration: number;
+};

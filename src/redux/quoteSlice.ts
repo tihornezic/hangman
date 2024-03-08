@@ -5,13 +5,13 @@ import { QuotableResponse } from "../types/types";
 type QuoteState = {
   data: QuotableResponse | null;
   loading: boolean;
-  error: any;
+  error: string | undefined;
 };
 
 const initialState: QuoteState = {
   data: null,
   loading: false,
-  error: null,
+  error: undefined,
 };
 
 export const fetchQuoteData = createAsyncThunk(

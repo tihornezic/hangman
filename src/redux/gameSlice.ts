@@ -5,28 +5,13 @@ import { v4 as uuidv4 } from "uuid";
 type GameState = {
   userName: string;
   gameId: string | null;
-  //
-  quoteId: string;
-  length: number;
-  uniqueCharacters: number;
-  //
   duration: number;
-  // errors: number;
-  errors: string[];
 };
 
 const initialState: GameState = {
   userName: "",
   gameId: null,
-  //
-  quoteId: "",
-  length: 0,
-  uniqueCharacters: 0,
-  //
   duration: 0,
-  // errors: 0,
-  errors: [],
-  //
 };
 
 export const gameSlice = createSlice({
@@ -40,20 +25,8 @@ export const gameSlice = createSlice({
     resetGameId: (state) => {
       state.gameId = uuidv4();
     },
-    setGameData: (state, action: PayloadAction<any>) => {
-      state.quoteId = action.payload.quoteId;
-      state.length = action.payload.length;
-      state.uniqueCharacters = action.payload.uniqueCharacters;
-    },
-    setDuration: (state, action: PayloadAction<any>) => {
-      console.log(action.payload);
+    setDuration: (state, action: PayloadAction<number>) => {
       state.duration = action.payload;
-    },
-    setErrors: (state, action: PayloadAction<any>) => {
-      state.errors.push(action.payload);
-    },
-    clearErrors: (state) => {
-      state.errors = [];
     },
     clearDuration: (state) => {
       state.duration = 0;
@@ -61,15 +34,8 @@ export const gameSlice = createSlice({
   },
 });
 
-export const {
-  setUserName,
-  resetGameId,
-  setGameData,
-  setDuration,
-  setErrors,
-  clearErrors,
-  clearDuration,
-} = gameSlice.actions;
+export const { setUserName, resetGameId, setDuration, clearDuration } =
+  gameSlice.actions;
 
 export const setPlayerNameAsync = (data: string) => (dispatch: AppDispatch) => {
   return dispatch(setUserName(data));

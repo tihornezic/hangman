@@ -4,12 +4,16 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { useNavigate } from "react-router-dom";
 import { calculateScore } from "../../helpers/helpers";
 
-const Congratulations = () => {
+type CongratulationsProps = {
+  mistakes: number;
+};
+
+const Congratulations = ({ mistakes }: CongratulationsProps) => {
   const gameData = useAppSelector((state) => state.game);
   const navigate = useNavigate();
 
   const [seconds, setSeconds] = useState(5);
-  const timerId = useRef<any>(null);
+  const timerId = useRef<number | undefined>(undefined);
 
   const stopTimer = () => {
     clearInterval(timerId.current);
@@ -35,8 +39,8 @@ const Congratulations = () => {
 
       <Stack>
         <Typography>Duration: {gameData.duration}ms</Typography>
-        <Typography>Mistakes: {gameData.errors.length}</Typography>
-        <Typography>Score: {calculateScore(gameData.errors.length)}</Typography>
+        <Typography>Mistakes: {mistakes}</Typography>
+        <Typography>Score: {calculateScore(mistakes)}</Typography>
       </Stack>
 
       <Typography variant="h6">

@@ -1,17 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { HighScoreResponse } from "../types/types";
+import { HighScoreResponse, SendScoringData } from "../types/types";
 
 type HighScoreState = {
   data: HighScoreResponse[] | null;
   loading: boolean;
-  error: any;
+  error: string | undefined;
 };
 
 const initialState: HighScoreState = {
   data: null,
   loading: false,
-  error: null,
+  error: undefined,
 };
 
 export const fetchHighScoreData = createAsyncThunk(
@@ -27,7 +27,7 @@ export const fetchHighScoreData = createAsyncThunk(
 
 export const sendScoringData = createAsyncThunk(
   "highScore/sendScoringData",
-  async (data: any) => {
+  async (data: SendScoringData) => {
     const res = await axios.post(
       "https://my-json-server.typicode.com/stanko-ingemark/hang_the_wise_man_frontend_task/highscores",
       data
@@ -37,8 +37,8 @@ export const sendScoringData = createAsyncThunk(
   }
 );
 
-export const quoteSlice = createSlice({
-  name: "highScores",
+export const scoreSlice = createSlice({
+  name: "score",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -57,4 +57,4 @@ export const quoteSlice = createSlice({
   },
 });
 
-export default quoteSlice.reducer;
+export default scoreSlice.reducer;

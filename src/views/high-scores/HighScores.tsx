@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { fetchHighScoreData } from "../../redux/highScoreSlice";
+import { fetchHighScoreData } from "../../redux/scoreSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { calculateScore } from "../../helpers/helpers";
 
@@ -22,7 +22,7 @@ const columns: GridColDef[] = [
 
 const HighScores = () => {
   const dispatch = useAppDispatch();
-  const { data, loading, error } = useAppSelector((state) => state.highScores);
+  const { data, loading } = useAppSelector((state) => state.highScores);
 
   useEffect(() => {
     const promise = dispatch(fetchHighScoreData());
@@ -40,13 +40,13 @@ const HighScores = () => {
         columns={columns}
         initialState={{
           pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
+            paginationModel: { page: 0, pageSize: 20 },
           },
           sorting: {
-            sortModel: [{ field: 'errors', sort: 'asc' }],
+            sortModel: [{ field: "errors", sort: "asc" }],
           },
         }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[5, 10, 20]}
       />
     </Box>
   );

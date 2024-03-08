@@ -3,7 +3,6 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchQuoteData } from "../../redux/quoteSlice";
-import { useNavigate } from "react-router-dom";
 import GuessFieldsBoard from "../../components/guess-fields-board/GuessFieldsBoard";
 import Keyboard from "../../components/keyboard/Keyboard";
 import { EnumGameStatus } from "../../types/types";
@@ -14,27 +13,17 @@ import {
 } from "../../helpers/helpers";
 import GameStats from "../../components/game-stats/GameStats";
 import Hangman from "../../components/hangman/Hangman";
-import {
-  clearDuration,
-  clearErrors,
-  resetGameId,
-  setErrors,
-  setGameData,
-} from "../../redux/gameSlice";
-import { sendScoringData } from "../../redux/highScoreSlice";
+import { clearDuration, resetGameId } from "../../redux/gameSlice";
+import { sendScoringData } from "../../redux/scoreSlice";
 import Modal from "../../components/modal/Modal";
 import Congratulations from "../../components/congratulations/Congratulations";
 
 const Play = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { userName, duration } = useAppSelector((state) => state.game);
 
-  const { userName, ...rest } = useAppSelector((state) => state.game);
-  const { errors } = useAppSelector((state) => state.game);
+  const { data } = useAppSelector((state) => state.quote);
 
-  const { data, loading, error } = useAppSelector((state) => state.quote);
-
-  //
   const [turn, setTurn] = useState(0);
   const [userInput, setUserInput] = useState("");
   const [mistakes, setMistakes] = useState<string[]>([]);
@@ -42,8 +31,6 @@ const Play = () => {
   const [gameStatus, setGameStatus] = useState<EnumGameStatus>(
     EnumGameStatus.not_started
   );
-
-  //
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const quoteData = data && data;
@@ -56,18 +43,6 @@ const Play = () => {
     quoteContent && findUniqueCharacters(quoteContent as string);
 
   useEffect(() => {
-    if (quoteData && uniqueCharacters) {
-      dispatch(
-        setGameData({
-          quoteId: quoteData._id,
-          length: quoteData.length,
-          uniqueCharacters: uniqueCharacters.length,
-        })
-      );
-    }
-  }, [dispatch, quoteData, uniqueCharacters]);
-
-  useEffect(() => {
     if (uniqueCharacters) {
       // if win
       if (doArraysHaveSameLetters(uniqueCharacters, corrects)) {
@@ -75,16 +50,16 @@ const Play = () => {
         setTimeout(() => setIsModalOpen(true), 1500);
 
         const sendData = async () => {
-          if (rest.duration !== 0) {
+          if (duration !== 0) {
             try {
               await dispatch(
                 sendScoringData({
-                  quoteId: rest.quoteId,
-                  length: rest.length,
-                  uniqueCharacters: rest.uniqueCharacters,
+                  quoteId: data._id,
+                  length: data.length,
+                  uniqueCharacters: uniqueCharacters.length,
                   userName: userName,
-                  errors: rest.errors,
-                  duration: rest.duration * 1000,
+                  errors: mistakes.length,
+                  duration: duration,
                 })
               );
             } catch (err) {
@@ -99,7 +74,7 @@ const Play = () => {
 
     // if loss
     if (mistakes.length === 6) setGameStatus(EnumGameStatus.lose);
-  }, [uniqueCharacters, corrects, mistakes, rest.duration]);
+  }, [uniqueCharacters, corrects, mistakes, duration]);
 
   useEffect(() => {
     if (uniqueCharacters) {
@@ -111,7 +86,6 @@ const Play = () => {
           }
 
           setMistakes((prevMistakes) => [...prevMistakes, userInput[turn - 1]]);
-          dispatch(setErrors(userInput[turn - 1]));
 
           return;
         }
@@ -127,6 +101,7 @@ const Play = () => {
 
     return () => {
       promise.abort();
+      dispatch(clearDuration());
     };
   }, [dispatch]);
 
@@ -151,7 +126,6 @@ const Play = () => {
           <Button
             onClick={() => {
               dispatch(resetGameId());
-              dispatch(clearErrors());
               dispatch(clearDuration());
             }}
             variant="contained"
@@ -183,7 +157,7 @@ const Play = () => {
       </Stack>
 
       <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-        <Congratulations />
+        <Congratulations mistakes={mistakes.length} />
       </Modal>
     </>
   );
