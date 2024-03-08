@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { QuotableResponse } from "../types/quotable";
+import { QuotableResponse } from "../types/types";
 
 type QuoteState = {
   data: QuotableResponse | null;
@@ -15,7 +15,7 @@ const initialState: QuoteState = {
 };
 
 export const fetchQuoteData = createAsyncThunk(
-  "user/fetchQuoteData",
+  "quote/fetchQuoteData",
   async () => {
     const res = await axios.get("https://api.quotable.io/random");
 

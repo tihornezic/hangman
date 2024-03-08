@@ -2,10 +2,10 @@ import { Stack, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomInput from "../../components/custom-input/CustomInput";
-import { setPlayerName } from "../../redux/playerSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useEffect } from "react";
+import { setUserName } from "../../redux/gameSlice";
 
 type InputType = {
   name: string;
@@ -13,7 +13,7 @@ type InputType = {
 
 const Start = () => {
   const navigate = useNavigate();
-  const playerName = useAppSelector((state) => state.player.playerName);
+  const userName = useAppSelector((state) => state.game.userName);
   const dispatch = useAppDispatch();
 
   const formMethods = useForm<InputType>({
@@ -25,17 +25,17 @@ const Start = () => {
   const { handleSubmit } = formMethods;
 
   const onSubmit = (formData: InputType) => {
-    const hasPlayerName = dispatch(setPlayerName(formData.name));
+    const hasPlayerName = dispatch(setUserName(formData.name));
 
     if (hasPlayerName) navigate("./play");
   };
 
   useEffect(() => {
-    if (playerName !== "") navigate("/play");
-  }, [playerName, navigate]);
+    if (userName !== "") navigate("/play");
+  }, [userName, navigate]);
 
   return (
-    <Stack spacing={5}>
+    <Stack spacing={7}>
       <Typography variant="h2" color="primary.main">
         Hangman
       </Typography>

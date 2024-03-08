@@ -1,17 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
-import playerReducer from "./playerSlice";
+import gameReducer from "./gameSlice";
 import quoteReducer from "./quoteSlice";
+import highScoreReducer from "./highScoreSlice";
 
 const store = configureStore({
   reducer: {
-    player: playerReducer,
+    game: gameReducer,
     quote: quoteReducer,
+    highScores: highScoreReducer,
   },
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
 
 export default store;

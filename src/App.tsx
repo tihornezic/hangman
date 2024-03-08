@@ -5,18 +5,7 @@ import routes from "./router";
 const App = () => {
   const routing = useRoutes(routes());
 
-  return (
-    <Stack
-      sx={{
-        minHeight: "100vh",
-        alignItems: "center",
-        justifyContent: "center",
-        bgcolor: "common.white",
-      }}
-    >
-      {routing}
-    </Stack>
-  );
+  return <Stack>{routing}</Stack>;
 };
 
 export default App;
