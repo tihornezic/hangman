@@ -5,7 +5,7 @@ import CustomInput from "../../components/custom-input/CustomInput";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useEffect } from "react";
-import { setUserName } from "../../redux/gameSlice";
+import { clearUserName, setUserName } from "../../redux/gameSlice";
 
 type InputType = {
   name: string;
@@ -13,7 +13,7 @@ type InputType = {
 
 const Start = () => {
   const navigate = useNavigate();
-  const userName = useAppSelector((state) => state.game.userName);
+  const { userName, gameId } = useAppSelector((state) => state.game);
   const dispatch = useAppDispatch();
 
   const formMethods = useForm<InputType>({
@@ -31,8 +31,8 @@ const Start = () => {
   };
 
   useEffect(() => {
-    if (userName !== "") navigate("/play");
-  }, [userName, navigate]);
+    if (userName !== "") dispatch(clearUserName());
+  }, [userName, dispatch, gameId]);
 
   return (
     <Stack spacing={7}>

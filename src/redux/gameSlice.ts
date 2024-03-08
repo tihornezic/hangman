@@ -29,13 +29,21 @@ export const gameSlice = createSlice({
       state.duration = action.payload;
     },
     clearDuration: (state) => {
-      state.duration = 0;
+      state.duration = initialState.duration;
+    },
+    clearUserName: (state) => {
+      state.userName = initialState.userName;
     },
   },
 });
 
-export const { setUserName, resetGameId, setDuration, clearDuration } =
-  gameSlice.actions;
+export const {
+  setUserName,
+  resetGameId,
+  setDuration,
+  clearDuration,
+  clearUserName,
+} = gameSlice.actions;
 
 export const setPlayerNameAsync = (data: string) => (dispatch: AppDispatch) => {
   return dispatch(setUserName(data));

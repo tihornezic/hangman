@@ -3,8 +3,9 @@ import NotFound from "./views/not-found/NotFound";
 import Layout from "./views/layout/Layout";
 import HighScores from "./views/high-scores/HighScores";
 import PlayWrapper from "./views/play/PlayWrapper";
+import ProtectedRoute from "./views/protected-route/ProtectedRoute";
 
-const routes = () => [
+const routes = (userName: string) => [
   {
     path: "/",
     element: <Layout />,
@@ -19,7 +20,11 @@ const routes = () => [
       },
       {
         path: "play",
-        element: <PlayWrapper />,
+        element: (
+          <ProtectedRoute condition={userName === ""} to="/">
+            <PlayWrapper />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "high-scores",
