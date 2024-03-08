@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchHighScoreData } from "../../redux/highScoreSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
+import { calculateScore } from "../../helpers/helpers";
 
 const columns: GridColDef[] = [
   { field: "userName", headerName: "User name", flex: 1 },
@@ -12,7 +13,7 @@ const columns: GridColDef[] = [
     headerName: "Score",
     flex: 1,
     valueFormatter: (params) => {
-      const score = 100 / 1 + params.value;
+      const score = calculateScore(params.value);
 
       return score;
     },
@@ -40,6 +41,9 @@ const HighScores = () => {
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 },
+          },
+          sorting: {
+            sortModel: [{ field: 'errors', sort: 'asc' }],
           },
         }}
         pageSizeOptions={[5, 10]}

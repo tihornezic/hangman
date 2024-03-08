@@ -30,3 +30,6 @@ export const doArraysHaveSameLetters = (
   // compare the sorted strings
   return sortedUnique === correctsString;
 };
+
+export const calculateScore = (numberOfErrors: number) =>
+  100 / 1 + numberOfErrors;

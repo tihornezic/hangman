@@ -21,6 +21,8 @@ import {
   setGameData,
 } from "../../redux/gameSlice";
 import { sendScoringData } from "../../redux/highScoreSlice";
+import Modal from "../../components/modal/Modal";
+import Congratulations from "../../components/congratulations/Congratulations";
 
 const Play = () => {
   const navigate = useNavigate();
@@ -39,6 +41,9 @@ const Play = () => {
   const [gameStatus, setGameStatus] = useState<EnumGameStatus>(
     EnumGameStatus.not_started
   );
+
+  //
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const quoteData = data && data;
   const quoteContent = quoteData && quoteData.content;
@@ -66,6 +71,7 @@ const Play = () => {
       // if win
       if (doArraysHaveSameLetters(uniqueCharacters, corrects)) {
         setGameStatus(EnumGameStatus.win);
+        setTimeout(() => setIsModalOpen(true), 1500);
 
         const sendData = async () => {
           if (rest.duration !== 0) {
@@ -80,8 +86,6 @@ const Play = () => {
                   duration: rest.duration * 1000,
                 })
               );
-
-              setTimeout(() => navigate("/high-scores"), 1500);
             } catch (err) {
               console.log(err);
             }
@@ -126,54 +130,60 @@ const Play = () => {
   }, [dispatch]);
 
   return (
-    <Stack
-      spacing={6}
-      sx={{ maxWidth: { xs: "95%", sm: "60%" }, alignItems: "center" }}
-    >
+    <>
       <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{ width: { xs: "90%", sm: "70%" } }}
+        spacing={6}
+        sx={{ maxWidth: { xs: "95%", sm: "60%" }, alignItems: "center" }}
       >
-        <GameStats
-          gameStatus={gameStatus}
-          mistakes={mistakes}
-          userName={userName}
-        />
-
-        <Button
-          onClick={() => {
-            dispatch(resetGameId());
-            dispatch(clearErrors());
-          }}
-          variant="contained"
-          sx={{ m: 0, right: 0 }}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ width: { xs: "90%", sm: "70%" } }}
         >
-          Restart
-        </Button>
+          <GameStats
+            gameStatus={gameStatus}
+            mistakes={mistakes}
+            userName={userName}
+          />
+
+          <Button
+            onClick={() => {
+              dispatch(resetGameId());
+              dispatch(clearErrors());
+            }}
+            variant="contained"
+            sx={{ m: 0, right: 0 }}
+          >
+            {gameStatus === EnumGameStatus.lose ? "Try again" : "Restart"}
+          </Button>
+        </Stack>
+
+        <Hangman gameStatus={gameStatus} mistakes={mistakes} />
+
+        {/* {loading && <Typography variant="h4">loading</Typography>} */}
+
+        {hangmanArrayOfWordsArrayOfChars && (
+          <GuessFieldsBoard
+            hangmanArrayOfWordsArrayOfChars={hangmanArrayOfWordsArrayOfChars}
+            userInput={userInput}
+            gameStatus={gameStatus}
+          />
+        )}
+
+        <Keyboard
+          setUserInput={setUserInput}
+          setTurn={setTurn}
+          gameStatus={gameStatus}
+          setGameStatus={setGameStatus}
+          usedCharacters={[...mistakes, ...corrects]}
+        />
       </Stack>
 
-      <Hangman gameStatus={gameStatus} mistakes={mistakes} />
-
-      {/* {loading && <Typography variant="h4">loading</Typography>} */}
-
-      {hangmanArrayOfWordsArrayOfChars && (
-        <GuessFieldsBoard
-          hangmanArrayOfWordsArrayOfChars={hangmanArrayOfWordsArrayOfChars}
-          userInput={userInput}
-          gameStatus={gameStatus}
-        />
-      )}
-
-      <Keyboard
-        setUserInput={setUserInput}
-        setTurn={setTurn}
-        gameStatus={gameStatus}
-        setGameStatus={setGameStatus}
-        usedCharacters={[...mistakes, ...corrects]}
-      />
-    </Stack>
+      <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+        <Congratulations />
+      </Modal>
+    </>
   );
 };
 

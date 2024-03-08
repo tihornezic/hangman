@@ -9,7 +9,6 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 // import { setGameData } from "../redux/gameSlice";
 
 const Counter = ({ gameStatus }: any) => {
-  const gameData = useAppSelector((state) => state.game);
   const dispatch = useAppDispatch();
   const [seconds, setSeconds] = useState(0);
   const timerId = useRef<any>(null);
@@ -46,7 +45,7 @@ const Counter = ({ gameStatus }: any) => {
     }
   }, [gameStatus]);
 
-  return <Typography>Seconds: {seconds}</Typography>;
+  return <Typography>Duration: {seconds}s</Typography>;
 };
 
 export default Counter;
