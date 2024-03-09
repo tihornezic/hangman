@@ -4,16 +4,26 @@ import { Box } from "@mui/material";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchHighScoreData } from "../../redux/scoreSlice";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import { calculateScore } from "../../helpers/helpers";
+import { calculateScoreSmarter } from "../../helpers/helpers";
 
 const columns: GridColDef[] = [
   { field: "userName", headerName: "User name", flex: 1 },
   {
-    field: "errors",
+    field: "score",
     headerName: "Score",
     flex: 1,
-    valueFormatter: (params) => {
-      const score = calculateScore(params.value);
+    valueGetter: (params) => {
+      const quoteLength = params.row.length;
+      const uniqueCharacters = params.row.uniqueCharacters;
+      const errors = params.row.errors;
+      const solvingTime = params.row.duration;
+
+      const score = calculateScoreSmarter(
+        quoteLength,
+        uniqueCharacters,
+        errors,
+        solvingTime
+      );
 
       return score;
     },
@@ -43,7 +53,7 @@ const HighScores = () => {
             paginationModel: { page: 0, pageSize: 20 },
           },
           sorting: {
-            sortModel: [{ field: "errors", sort: "asc" }],
+            sortModel: [{ field: "score", sort: "desc" }],
           },
         }}
         pageSizeOptions={[5, 10, 20]}

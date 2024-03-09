@@ -157,7 +157,10 @@ const Play = () => {
       </Stack>
 
       <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
-        <Congratulations mistakes={mistakes.length} />
+        <Congratulations
+          mistakes={mistakes.length}
+          uniqueCharacters={uniqueCharacters}
+        />
       </Modal>
     </>
   );

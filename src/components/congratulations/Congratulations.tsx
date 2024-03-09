@@ -2,14 +2,19 @@ import { Button, Stack, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useNavigate } from "react-router-dom";
-import { calculateScore } from "../../helpers/helpers";
+import { calculateScoreSmarter } from "../../helpers/helpers";
 
 type CongratulationsProps = {
   mistakes: number;
+  uniqueCharacters: string | null;
 };
 
-const Congratulations = ({ mistakes }: CongratulationsProps) => {
+const Congratulations = ({
+  mistakes,
+  uniqueCharacters,
+}: CongratulationsProps) => {
   const gameData = useAppSelector((state) => state.game);
+  const quoteData = useAppSelector((state) => state.quote);
   const navigate = useNavigate();
 
   const [seconds, setSeconds] = useState(5);
@@ -40,7 +45,15 @@ const Congratulations = ({ mistakes }: CongratulationsProps) => {
       <Stack>
         <Typography>Duration: {gameData.duration}ms</Typography>
         <Typography>Mistakes: {mistakes}</Typography>
-        <Typography>Score: {calculateScore(mistakes)}</Typography>
+        <Typography>
+          Score:{" "}
+          {calculateScoreSmarter(
+            quoteData.data?.length as number,
+            uniqueCharacters?.length as number,
+            mistakes,
+            gameData.duration
+          )}
+        </Typography>
       </Stack>
 
       <Typography variant="h6">
