@@ -26,7 +26,7 @@ const Congratulations = ({
   };
 
   useEffect(() => {
-    timerId.current = setInterval(() => {
+    timerId.current = window.setInterval(() => {
       setSeconds((prev) => {
         if (prev === 1) navigate("/high-scores");
         return prev - 1;
@@ -44,7 +44,9 @@ const Congratulations = ({
 
       <Stack>
         <Typography>Duration: {gameData.duration}ms</Typography>
+
         <Typography>Mistakes: {mistakes}</Typography>
+
         <Typography>
           Score:{" "}
           {calculateScoreSmarter(

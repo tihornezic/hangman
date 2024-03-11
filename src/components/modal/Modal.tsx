@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { Modal as MuiModal } from "@mui/material";
-import { ReactNode } from "react";
+import { Dispatch, ReactNode } from "react";
 
 const style = {
   position: "absolute" as "absolute",
@@ -20,7 +20,7 @@ const Modal = ({
   children,
 }: {
   isOpen: boolean;
-  setIsOpen: any;
+  setIsOpen: Dispatch<React.SetStateAction<boolean>>;
   children: ReactNode;
 }) => {
   const handleClose = () => setIsOpen(false);

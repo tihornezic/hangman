@@ -1,6 +1,6 @@
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchQuoteData } from "../../redux/quoteSlice";
 import GuessFieldsBoard from "../../components/guess-fields-board/GuessFieldsBoard";
@@ -8,92 +8,44 @@ import Keyboard from "../../components/keyboard/Keyboard";
 import { EnumGameStatus } from "../../types/types";
 import {
   calculateArrayOfWordsArrayOfChars,
-  doArraysHaveSameLetters,
   findUniqueCharacters,
 } from "../../helpers/helpers";
 import GameStats from "../../components/game-stats/GameStats";
 import Hangman from "../../components/hangman/Hangman";
 import { clearDuration, resetGameId } from "../../redux/gameSlice";
-import { sendScoringData } from "../../redux/scoreSlice";
 import Modal from "../../components/modal/Modal";
 import Congratulations from "../../components/congratulations/Congratulations";
+import { usePlay } from "../../hooks/usePlay";
 
 const Play = () => {
   const dispatch = useAppDispatch();
-  const { userName, duration } = useAppSelector((state) => state.game);
-
-  const { data } = useAppSelector((state) => state.quote);
-
-  const [turn, setTurn] = useState(0);
-  const [userInput, setUserInput] = useState("");
-  const [mistakes, setMistakes] = useState<string[]>([]);
-  const [corrects, setCorrects] = useState<string[]>([]);
-  const [gameStatus, setGameStatus] = useState<EnumGameStatus>(
-    EnumGameStatus.not_started
-  );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data, loading } = useAppSelector((state) => state.quote);
 
   const quoteData = data && data;
   const quoteContent = quoteData && quoteData.content;
 
-  const hangmanArrayOfWordsArrayOfChars =
-    quoteContent && calculateArrayOfWordsArrayOfChars(quoteContent);
+  const hangmanArrayOfWordsArrayOfChars = useMemo(
+    () => calculateArrayOfWordsArrayOfChars(quoteContent ?? ""),
+    [quoteContent]
+  );
 
-  const uniqueCharacters =
-    quoteContent && findUniqueCharacters(quoteContent as string);
+  const uniqueCharacters = useMemo(
+    () => findUniqueCharacters(quoteContent ?? ""),
+    [quoteContent]
+  );
 
-  useEffect(() => {
-    if (uniqueCharacters) {
-      // if win
-      if (doArraysHaveSameLetters(uniqueCharacters, corrects)) {
-        setGameStatus(EnumGameStatus.win);
-        setTimeout(() => setIsModalOpen(true), 1500);
-
-        const sendData = async () => {
-          if (duration !== 0) {
-            try {
-              await dispatch(
-                sendScoringData({
-                  quoteId: data._id,
-                  length: data.length,
-                  uniqueCharacters: uniqueCharacters.length,
-                  userName: userName,
-                  errors: mistakes.length,
-                  duration: duration,
-                })
-              );
-            } catch (err) {
-              console.log(err);
-            }
-          }
-        };
-
-        sendData();
-      }
-    }
-
-    // if loss
-    if (mistakes.length === 6) setGameStatus(EnumGameStatus.lose);
-  }, [uniqueCharacters, corrects, mistakes, duration]);
-
-  useEffect(() => {
-    if (uniqueCharacters) {
-      if (gameStatus === EnumGameStatus.in_progress) {
-        if (!uniqueCharacters?.includes(userInput[turn - 1])) {
-          // wrong character already there
-          if (mistakes.includes(userInput[turn - 1])) {
-            return;
-          }
-
-          setMistakes((prevMistakes) => [...prevMistakes, userInput[turn - 1]]);
-
-          return;
-        }
-
-        setCorrects((prevCorrects) => [...prevCorrects, userInput[turn - 1]]);
-      }
-    }
-  }, [gameStatus, userInput, turn, uniqueCharacters, mistakes]);
+  const {
+    userName,
+    userInput,
+    setUserInput,
+    setTurn,
+    corrects,
+    mistakes,
+    gameStatus,
+    setGameStatus,
+    isModalOpen,
+    setIsModalOpen,
+  } = usePlay(uniqueCharacters, quoteData);
 
   useEffect(() => {
     // fetch the quote data
@@ -109,7 +61,7 @@ const Play = () => {
     <>
       <Stack
         spacing={6}
-        sx={{ maxWidth: { xs: "95%", sm: "60%" }, alignItems: "center" }}
+        sx={{ maxWidth: { xs: "95%", sm: "60%" }, alignItems: "center", py: 5 }}
       >
         <Stack
           direction="row"
@@ -137,7 +89,7 @@ const Play = () => {
 
         <Hangman gameStatus={gameStatus} mistakes={mistakes} />
 
-        {/* {loading && <Typography variant="h4">loading</Typography>} */}
+        {loading && <Typography variant="h5">Loading...</Typography>}
 
         {hangmanArrayOfWordsArrayOfChars && (
           <GuessFieldsBoard

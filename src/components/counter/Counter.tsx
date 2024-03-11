@@ -17,7 +17,7 @@ const Counter = ({ gameStatus }: CounterProps) => {
   const secondsRef = useRef<number | undefined>(undefined);
 
   const startTimer = () => {
-    secondsRef.current = setInterval(() => {
+    secondsRef.current = window.setInterval(() => {
       setSeconds((prev) => prev + 1);
     }, 1000);
 
@@ -32,7 +32,7 @@ const Counter = ({ gameStatus }: CounterProps) => {
     secondsRef.current = 0;
 
     clearInterval(interval);
-  };
+  }
 
   useEffect(() => {
     gameStatus === EnumGameStatus.in_progress && startTimer();

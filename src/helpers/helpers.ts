@@ -1,11 +1,7 @@
-// export const specialCharactersRegex = /[,'";:<>\/\\[\]{}()=_+`~!@#$%^&*|.\s]/;
-export const specialCharactersRegex = /[,'";:<>\/\\[\]{}()=_+`~!@#$%^&*|\-.\s]/;
+export const specialCharactersRegex = /[\\"'\\.,\s-;?!:0-9]/g;
 
 export const findUniqueCharacters = (str: string) => {
-  const cleanedSentence = str.replace(
-    /[.,'";:<>\/\\[\]{}()=_+`~!@#$%^&*|\s]/g,
-    ""
-  );
+  const cleanedSentence = str.replace(specialCharactersRegex, "");
 
   return [...cleanedSentence.toLowerCase()].reduce((acc, curr) => {
     return acc.includes(curr) ? acc : acc + curr;
@@ -18,16 +14,16 @@ export const calculateArrayOfWordsArrayOfChars = (sentence: string) =>
     .map((word) => word)
     .map((arr) => arr.split(""));
 
-export const doArraysHaveSameLetters = (
+export const doStringsHaveSameCharacters = (
   uniqueCharacters: string,
   corrects: string[]
 ): boolean => {
   // sort the arrays and convert them to strings
-  const sortedUnique = uniqueCharacters.split("").sort().join("");
-  const correctsString = corrects.sort().join("");
+  const sortedUniqueCharacters = uniqueCharacters.split("").sort().join("");
+  const sortedCorrectCharacters = corrects.sort().join("");
 
   // compare the sorted strings
-  return sortedUnique === correctsString;
+  return sortedUniqueCharacters === sortedCorrectCharacters;
 };
 
 export const calculateScore = (numberOfErrors: number) =>

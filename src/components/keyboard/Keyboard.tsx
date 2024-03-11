@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from "@mui/material";
-import { Dispatch, useEffect } from "react";
+import { Dispatch, useCallback, useEffect } from "react";
 import { EnumGameStatus } from "../../types/types";
 
 const keyboardLayout = [
@@ -22,27 +22,33 @@ const Keyboard = ({
   setGameStatus,
   usedCharacters,
 }: KeyboardProps) => {
-  const handleType = (e: KeyboardEvent) => {
-    const lowerCasedLetter = e.key.toLocaleLowerCase();
-    const isLetter = lowerCasedLetter.match(/^[a-z]{1}$/) !== null;
+  const isWinOrLose =
+    gameStatus === EnumGameStatus.lose || gameStatus === EnumGameStatus.win;
 
-    if (isLetter) {
-      setGameStatus(EnumGameStatus.in_progress);
+  const handleType = useCallback(
+    (e: KeyboardEvent) => {
+      const lowerCasedLetter = e.key.toLocaleLowerCase();
+      const isLetter = lowerCasedLetter.match(/^[a-z]{1}$/) !== null;
 
-      if (usedCharacters.includes(lowerCasedLetter)) return;
+      if (isLetter) {
+        setGameStatus(EnumGameStatus.in_progress);
 
-      setUserInput((prevUserInput) => {
-        // if letter already exists
-        if (prevUserInput.includes(lowerCasedLetter)) {
-          return prevUserInput;
-        }
+        if (usedCharacters.includes(lowerCasedLetter)) return;
 
-        // if successful turn
-        setTurn((prevTurn: number) => prevTurn + 1);
-        return prevUserInput + lowerCasedLetter;
-      });
-    }
-  };
+        setUserInput((prevUserInput) => {
+          // if letter already exists
+          if (prevUserInput.includes(lowerCasedLetter)) {
+            return prevUserInput;
+          }
+
+          // if successful turn
+          setTurn((prevTurn: number) => prevTurn + 1);
+          return prevUserInput + lowerCasedLetter;
+        });
+      }
+    },
+    [setGameStatus, setTurn, setUserInput, usedCharacters]
+  );
 
   useEffect(() => {
     if (gameStatus === EnumGameStatus.win || gameStatus === EnumGameStatus.lose)
@@ -51,7 +57,7 @@ const Keyboard = ({
     window.addEventListener("keydown", handleType);
 
     return () => window.removeEventListener("keydown", handleType);
-  }, [gameStatus]);
+  }, [gameStatus, handleType]);
 
   return (
     <Stack spacing={1} sx={{ alignItems: "center" }}>
@@ -66,9 +72,6 @@ const Keyboard = ({
         >
           {row.map((key, keyIndex) => {
             const isUsedCharacters = usedCharacters.includes(key);
-            const isWinOrLose =
-              gameStatus === EnumGameStatus.lose ||
-              gameStatus === EnumGameStatus.win;
 
             return (
               <Button
